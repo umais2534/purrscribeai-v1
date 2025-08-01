@@ -56,7 +56,7 @@ const PetsGrid = ({ pets, onViewPet, onEditPet, onDeletePet }: PetsGridProps) =>
             <img
               src={pet.imageUrl}
               alt={pet.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-x-[-1]"
+             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${pet.name}`;

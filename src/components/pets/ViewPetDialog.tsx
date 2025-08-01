@@ -43,7 +43,7 @@ const ViewPetDialog = ({ isOpen, onOpenChange, pet, onEdit, onDelete }: ViewPetD
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <div className="flex items-center gap-2">
+          <div className=" gap-2 relative bg-[#272E3F] text-white text-center -mt-300 -pt-10 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto -mt-6">
             <span className="text-xl font-semibold">{pet.name}</span>
             <span className="bg-primary/10 px-2 py-1 rounded text-xs font-medium">
               {pet.species}

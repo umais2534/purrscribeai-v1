@@ -522,38 +522,39 @@ const ClinicManagement = () => {
   className="overflow-hidden transition-transform duration-300 hover:scale-105 shadow-[0_10px_30px_rgba(0,0,0,0.2)] h-full flex flex-col justify-between"
 >
   {/* Top Section */}
-  <div className="p-6 flex flex-col gap-4 flex-grow">
-    <div className="flex items-center justify-between">
+  <div className="p-4 sm:p-6 flex flex-col gap-4 flex-grow">
+    <div className="flex items-center justify-between flex-wrap gap-4">
+      {/* Avatar with animation */}
+      <motion.div
+        whileHover="hover"
+        initial="initial"
+        animate="initial"
+        variants={{
+          initial: { scale: 1, rotate: 0, y: 0, boxShadow: "none" },
+          hover: {
+            scale: 1.1,
+            rotate: [0, 2, -2, 2, -2, 0],
+            y: -4,
+            boxShadow: "0 0 12px rgba(0, 120, 255, 0.5)",
+            transition: {
+              duration: 0.6,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop",
+            },
+          },
+        }}
+        className="rounded-full"
+      >
+        <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-transparent hover:ring-blue-400 transition duration-300">
+          <AvatarImage src={clinic.logoUrl} alt={clinic.name} />
+          <AvatarFallback>
+            {clinic.name.substring(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      </motion.div>
 
-<motion.div
-  whileHover="hover"
-  initial="initial"
-  animate="initial"
-  variants={{
-    initial: { scale: 1, rotate: 0, y: 0, boxShadow: "none" },
-    hover: {
-      scale: 1.1,
-      rotate: [0, 2, -2, 2, -2, 0],
-      y: -4,
-      boxShadow: "0 0 12px rgba(0, 120, 255, 0.5)",
-      transition: {
-        duration: 0.6,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "loop",
-      },
-    },
-  }}
-  className="rounded-full"
->
-  <Avatar className="h-16 w-16 ring-2 ring-transparent hover:ring-blue-400 transition duration-300">
-    <AvatarImage src={clinic.logoUrl} alt={clinic.name} />
-    <AvatarFallback>
-      {clinic.name.substring(0, 2).toUpperCase()}
-    </AvatarFallback>
-  </Avatar>
-</motion.div>
-
+      {/* Dropdown Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="rounded-full">
@@ -583,23 +584,23 @@ const ClinicManagement = () => {
     </div>
 
     {/* Clinic Info */}
-    <div className="flex-grow">
-      <h3 className="font-semibold text-lg mb-1">{clinic.name}</h3>
-      <Badge className="mb-2">{clinic.type}</Badge>
+    <div className="flex-grow space-y-2">
+      <h3 className="font-semibold text-base sm:text-lg">{clinic.name}</h3>
+      <Badge className="mb-1">{clinic.type}</Badge>
 
-      <div className="space-y-2 text-sm text-muted-foreground">
-        <div className="flex items-start">
-          <MapPin size={14} className="mr-2 mt-0.5" />
-          <span>
+      <div className="space-y-2 text-sm sm:text-base text-muted-foreground">
+        <div className="flex items-start gap-2">
+          <MapPin size={14} className="mt-0.5" />
+          <span className="break-words">
             {clinic.address}, {clinic.city}, {clinic.state} {clinic.zipCode}
           </span>
         </div>
-        <div className="flex items-center">
-          <Phone size={14} className="mr-2" />
+        <div className="flex items-center gap-2">
+          <Phone size={14} />
           <span>{clinic.phone}</span>
         </div>
-        <div className="flex items-center">
-          <Users size={14} className="mr-2" />
+        <div className="flex items-center gap-2">
+          <Users size={14} />
           <span>{clinic.petCount} pets</span>
         </div>
       </div>
@@ -607,16 +608,17 @@ const ClinicManagement = () => {
   </div>
 
   {/* Sticky Bottom Button */}
-  <div className="bg-muted p-4 border-t">
+  <div className="bg-muted p-4 border-t mt-auto">
     <Button
       variant="ghost"
-      className="w-full justify-start"
+      className="w-full justify-start text-sm sm:text-base"
       onClick={() => handleViewClinic(clinic)}
     >
       View Details
     </Button>
   </div>
 </Card>
+
 
 
           ))}

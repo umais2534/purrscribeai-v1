@@ -80,7 +80,7 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
         <div className="flex-col items-center justify-center p-4 border-b">
           <div className="flex items-center justify-center">
             <img
-              src={expanded ? "/purrscribe-logo.png" : "/fulllogo_transparent.png"}
+              src={expanded ? "/purrscribe.svg" : "/fulllogo_transparent.png"}
               alt="PurrScribe Logo"
               className={expanded ? "w-[100px]" : "w-[150px]"}
             />
@@ -123,8 +123,8 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
 
       {/* Main content with avatar dropdown inside */}
       <div
-        className="flex-1 overflow-auto md:p-9 mx-px px-20 py-8 relative"
-        style={{ marginLeft: expanded ? "0rem" : "20rem" }}
+        className="flex-1 overflow-auto px-20 md:p-9 mx-px px-20 py-8 relative"
+        style={{ marginLeft: expanded ? "0rem" : "0rem" }}
       >
         {/* Avatar Dropdown */}
        

@@ -3,8 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
-const QuickAccessCard = ({ card }) => (
-  <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+const QuickAccessCard = ({ card,borderColorClass }) => (
+ 
+  <Card className={`overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 ${borderColorClass}`}>
     <CardContent className="transition-transform duration-300 ease-in-out hover:scale-110 cursor-pointer p-6 flex flex-col h-full">
       <div className={`rounded-full w-16 h-16 flex items-center justify-center mb-4 ${card.color}`}>
         {card.icon}
@@ -19,6 +20,8 @@ const QuickAccessCard = ({ card }) => (
       </div>
     </CardContent>
   </Card>
+
+
 );
 
 export default QuickAccessCard;

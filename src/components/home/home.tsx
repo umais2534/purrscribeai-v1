@@ -63,14 +63,22 @@ const quickAccessCards = quickAccessCardData.map((item) => ({
         </motion.section>
 
         {/* Quick Access */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold">Quick Access</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {quickAccessCards.map((card, idx) => (
-              <QuickAccessCard key={idx} card={card} />
-            ))}
-          </div>
-        </section>
+      <section className="space-y-4">
+  <h2 className="text-xl font-semibold">Quick Access</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {quickAccessCards.map((card, idx) => {
+      const col = idx % 3; // 0 = first column, 1 = second, 2 = third
+      const borderColorClass =
+        col === 0
+          ? "border-gray-250"
+          : col === 1
+          ? "border-gray-300"
+          : "border-gray-350";
+
+      return <QuickAccessCard key={idx} card={card} borderColorClass={borderColorClass} />;
+    })}
+  </div>
+</section>
 
         {/* Recent Transcriptions */}
         <section className="space-y-4">

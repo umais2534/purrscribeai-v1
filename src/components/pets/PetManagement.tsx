@@ -7,11 +7,10 @@ import AddPetDialog from "./AddPetDialog";
 import ViewPetDialog from "./ViewPetDialog";
 import EditPetDialog from "./EditPetDialog";
 import DeletePetDialog from "./DeletePetDialog";
-import { Pet } from "./types/petTypes";
-
-import { PetFormData } from "./types/petTypes";
+import { Pet, PetFormData } from "./types/petTypes";
 
 const PetManagement = () => {
+  // Initial pets data
   const [pets, setPets] = useState<Pet[]>([
     {
       id: "1",
@@ -75,13 +74,20 @@ const PetManagement = () => {
     },
   ]);
 
+  // State for search and filter
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpecies, setSelectedSpecies] = useState<string>("all");
+
+  // State for dialogs
   const [isAddPetDialogOpen, setIsAddPetDialogOpen] = useState(false);
   const [isViewPetDialogOpen, setIsViewPetDialogOpen] = useState(false);
   const [isEditPetDialogOpen, setIsEditPetDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // State for selected pet
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+
+  // State for forms
   const [newPet, setNewPet] = useState<PetFormData>({
     name: "",
     species: "",
@@ -92,6 +98,17 @@ const PetManagement = () => {
     notes: "",
   });
 
+  const [editFormData, setEditFormData] = useState<PetFormData>({
+    name: "",
+    species: "",
+    breed: "",
+    age: "",
+    owner: "",
+    imageUrl: "",
+    notes: "",
+  });
+
+  // Filter pets based on search and species
   const filteredPets = pets.filter((pet) => {
     const matchesSearch =
       pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,14 +121,13 @@ const PetManagement = () => {
     return matchesSearch && matchesSpecies;
   });
 
+  // Handle adding a new pet
   const handleAddPet = () => {
     if (newPet.name && newPet.species && newPet.breed && newPet.owner) {
       const petToAdd = {
         ...newPet,
         id: Date.now().toString(),
-        imageUrl:
-          newPet.imageUrl ||
-          `https://api.dicebear.com/7.x/avataaars/svg?seed=${newPet.name}`,
+        imageUrl: newPet.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newPet.name}`,
       } as Pet;
 
       setPets([...pets, petToAdd]);
@@ -128,16 +144,13 @@ const PetManagement = () => {
     }
   };
 
+  // Handle viewing a pet
   const handleViewPet = (pet: Pet) => {
     setSelectedPet(pet);
     setIsViewPetDialogOpen(true);
   };
 
-  const openDeleteConfirmation = (id: string) => {
-    setSelectedPet(pets.find((pet) => pet.id === id) || null);
-    setIsDeleteDialogOpen(true);
-  };
-
+  // Handle deleting a pet
   const handleDeletePet = () => {
     if (selectedPet) {
       setPets(pets.filter((pet) => pet.id !== selectedPet.id));
@@ -146,9 +159,10 @@ const PetManagement = () => {
     }
   };
 
+  // Handle opening edit dialog
   const handleEditPet = () => {
     if (selectedPet) {
-      setNewPet({
+      setEditFormData({
         name: selectedPet.name,
         species: selectedPet.species,
         breed: selectedPet.breed,
@@ -158,23 +172,24 @@ const PetManagement = () => {
         notes: selectedPet.notes || "",
       });
       setIsEditPetDialogOpen(true);
-      setIsViewPetDialogOpen(false);
     }
   };
 
+  // Handle saving edited pet
   const saveEditedPet = () => {
-    if (selectedPet && newPet.name && newPet.species && newPet.breed && newPet.owner) {
+    if (selectedPet && editFormData.name && editFormData.species && 
+        editFormData.breed && editFormData.owner) {
       const updatedPets = pets.map((pet) => {
         if (pet.id === selectedPet.id) {
           return {
             ...pet,
-            name: newPet.name!,
-            species: newPet.species!,
-            breed: newPet.breed!,
-            age: newPet.age!,
-            owner: newPet.owner!,
-            imageUrl: newPet.imageUrl || pet.imageUrl,
-            notes: newPet.notes,
+            name: editFormData.name,
+            species: editFormData.species,
+            breed: editFormData.breed,
+            age: editFormData.age,
+            owner: editFormData.owner,
+            imageUrl: editFormData.imageUrl || pet.imageUrl,
+            notes: editFormData.notes,
           };
         }
         return pet;
@@ -182,7 +197,7 @@ const PetManagement = () => {
 
       setPets(updatedPets);
       setIsEditPetDialogOpen(false);
-      setNewPet({
+      setEditFormData({
         name: "",
         species: "",
         breed: "",
@@ -192,6 +207,15 @@ const PetManagement = () => {
         notes: "",
       });
     }
+  };
+
+  // Handle form changes
+  const handleNewPetChange = (updatedFields: Partial<PetFormData>) => {
+    setNewPet(prev => ({ ...prev, ...updatedFields }));
+  };
+
+  const handleEditFormChange = (updatedFields: Partial<PetFormData>) => {
+    setEditFormData(prev => ({ ...prev, ...updatedFields }));
   };
 
   return (
@@ -208,15 +232,21 @@ const PetManagement = () => {
       <PetsGrid
         pets={filteredPets}
         onViewPet={handleViewPet}
-        onEditPet={handleEditPet}
-        onDeletePet={openDeleteConfirmation}
+        onEditPet={(pet) => {
+          setSelectedPet(pet);
+          handleEditPet();
+        }}
+        onDeletePet={(id) => {
+          setSelectedPet(pets.find(p => p.id === id) || null);
+          setIsDeleteDialogOpen(true);
+        }}
       />
 
       <AddPetDialog
         isOpen={isAddPetDialogOpen}
         onOpenChange={setIsAddPetDialogOpen}
         pet={newPet}
-        onPetChange={setNewPet}
+        onPetChange={handleNewPetChange}
         onAddPet={handleAddPet}
       />
 
@@ -225,14 +255,17 @@ const PetManagement = () => {
         onOpenChange={setIsViewPetDialogOpen}
         pet={selectedPet}
         onEdit={handleEditPet}
-        onDelete={openDeleteConfirmation}
+        onDelete={(id) => {
+          setSelectedPet(pets.find(p => p.id === id) || null);
+          setIsDeleteDialogOpen(true);
+        }}
       />
 
       <EditPetDialog
         isOpen={isEditPetDialogOpen}
         onOpenChange={setIsEditPetDialogOpen}
-        pet={newPet}
-        onPetChange={setNewPet}
+        pet={editFormData}
+        onPetChange={handleEditFormChange}
         onSave={saveEditedPet}
       />
 
