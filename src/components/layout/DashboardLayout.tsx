@@ -3,13 +3,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
-  ChevronLeft,
-  ChevronRight,
   Mic,
   History,
   PawPrint,
   Building2,
-  User,
   LogOut,
   Menu,
   FileText,
@@ -28,24 +25,16 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [expanded, setExpanded] = useState(true);
+
   const location = useLocation();
-
-  const toggleSidebar = () => {
-    setExpanded(!expanded);
-  };
-
   const { logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-  };
+const [dropdownOpen, setDropdownOpen] = useState(false);
+const toggleDropdown = () => setDropdownOpen(prev => !prev);
+  const toggleSidebar = () => setExpanded(!expanded);
+  const handleLogout = () => logout();
 
   const navigationItems = [
-    {
-      path: "/dashboard",
-      label: "Dashboard",
-      icon: <LayoutDashboard size={20} />,
-    },
+    { path: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
     { path: "/transcribe", label: "Transcribe", icon: <Mic size={20} /> },
     { path: "/history", label: "History", icon: <History size={20} /> },
     { path: "/calls", label: "Calls", icon: <Phone size={20} /> },
@@ -53,30 +42,22 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: "/clinics", label: "Clinics", icon: <Building2 size={20} /> },
     { path: "/templates", label: "Templates", icon: <NotebookPen size={20} /> },
     { path: "/files", label: "Files", icon: <FileText size={20} /> },
-    { path: "/profile", label: "Profile", icon: <User size={20} /> },
   ];
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background ">
+      {/* Toggle Sidebar */}
       <div
         className={cn(
           "absolute justify-end bg-gray-250 text-gray-500",
-          expanded ? "left-56" : "left-8",
+          expanded ? "left-56" : "left-8"
         )}
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="rounded-full"
-        >
-          {expanded ? (
-            <PanelLeftClose size={25} />
-          ) : (
-            <PanelLeftOpen size={20} />
-          )}
+        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="rounded-full">
+          {expanded ? <PanelLeftClose size={25} /> : <PanelLeftOpen size={20} />}
         </Button>
       </div>
+
       {/* Mobile sidebar toggle */}
       <Button
         variant="ghost"
@@ -86,22 +67,20 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       >
         <Menu size={20} />
       </Button>
+
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex flex-col bg-card border-r shadow-sm transition-all duration-100 md:relative ",
+          "fixed inset-y-0 left-30 z-40 flex flex-col bg-[#E6EFFF] border-r shadow-sm transition-all duration-100 md:relative",
           expanded ? "w-64" : "w-16",
           "md:block",
-          !expanded && "md:w-16",
-          !expanded && "md:items-center",
+          !expanded && "md:w-16 md:items-center"
         )}
       >
         <div className="flex-col items-center justify-center p-4 border-b">
           <div className="flex items-center justify-center">
             <img
-              src={
-                expanded ? "/purrscribe-logo.png" : "/fulllogo_transparent.png"
-              }
+              src={expanded ? "/purrscribe-logo.png" : "/fulllogo_transparent.png"}
               alt="PurrScribe Logo"
               className={expanded ? "w-[100px]" : "w-[150px]"}
             />
@@ -117,8 +96,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname === item.path
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                !expanded && "justify-center px-0",
+                  : "text-muted-foreground hover:bg-white hover:text-accent-foreground",
+                !expanded && "justify-center px-0"
               )}
             >
               <span className="mr-3">{item.icon}</span>
@@ -128,27 +107,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
 
         <div className="flex-col p-4 border-t">
-          <div className="flex items-center space-x-6">
-            <Avatar>
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=vet" />
-              <AvatarFallback>VT</AvatarFallback>
-            </Avatar>
-            {expanded && (
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">Dr. Smith</span>
-                <span className="text-xs text-muted-foreground">Premium</span>
-              </div>
-            )}
-          </div>
-
           <Button
             variant="ghost"
-            className={
-              cn(
-                "flex items-left text-muted-foreground hover:text-foreground",
-                !expanded && "left",
-              ) + " max-w-full w-[100px] px-4 ml-5 mt-[4]"
-            }
+            className={cn(
+              "flex items-left text-muted-foreground hover:text-foreground",
+              !expanded && "left"
+            ) + " max-w-full w-[100px] px-4 ml-0 mt-[4]"}
             onClick={handleLogout}
           >
             <LogOut size={20} className="mr-2" />
@@ -157,13 +121,48 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main content with avatar dropdown inside */}
       <div
-        className="flex-1 overflow-auto md:p-8 mx-px px-20 py-[8]"
-        style={{ marginLeft: expanded ? "4rem" : "4rem" }}
+        className="flex-1 overflow-auto md:p-9 mx-px px-20 py-8 relative"
+        style={{ marginLeft: expanded ? "0rem" : "20rem" }}
       >
+        {/* Avatar Dropdown */}
+       
+        {/* Page Content */}
         {children}
       </div>
+      {/* Avatar Dropdown - Absolutely positioned at top right */}
+<div className="absolute top-6 right-6 z-50">
+  <div className="relative">
+    <div onClick={toggleDropdown} className="cursor-pointer">
+      <Avatar className="h-10 w-10">
+        <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=vet" />
+        <AvatarFallback>VT</AvatarFallback>
+      </Avatar>
+    </div>
+
+    {/* Dropdown Menu */}
+    {dropdownOpen && (
+      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
+        <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+         <Link
+          to="/profile"
+      
+        >
+          Settings
+        </Link>
+        </button>
+        <button
+          onClick={handleLogout}
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+        >
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };

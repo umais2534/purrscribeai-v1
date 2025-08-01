@@ -108,9 +108,9 @@ const VisitTypeTemplates: React.FC<VisitTypeTemplatesProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Visit Type Templates</h3>
+    <div className="space-y-4 mt-10 mr-8">
+      <div className="flex justify-between items-center flex justify-between items-center mb-6 bg-gradient-to-r from-[#F0F4FF] to-[#E0ECFF] rounded-xl w-[100%]  p-6 shadow-sm mb-8">
+        <h3 className="text-lg font-medium ">Visit Type Templates</h3>
         <Dialog open={isAddTemplateOpen} onOpenChange={setIsAddTemplateOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -183,72 +183,97 @@ const VisitTypeTemplates: React.FC<VisitTypeTemplatesProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {templates.map((template) => (
-          <Card key={template.id} className="overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-md">{template.name}</CardTitle>
-              {template.description && (
-                <CardDescription>{template.description}</CardDescription>
-              )}
-            </CardHeader>
-            <CardContent>
-              <div className="bg-muted/50 p-3 rounded-md">
-                <pre className="text-xs whitespace-pre-wrap font-mono">
-                  {template.template.length > 100
-                    ? `${template.template.substring(0, 100)}...`
-                    : template.template}
-                </pre>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <AlertDialog
-                open={
-                  isDeleteDialogOpen && selectedTemplate?.id === template.id
-                }
-                onOpenChange={(open) => {
-                  setIsDeleteDialogOpen(open);
-                  if (!open) setSelectedTemplate(null);
-                }}
-              >
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSelectedTemplate(template)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Template</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to delete the "{template.name}"
-                      template? This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteTemplate}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onSelectTemplate(template)}
-              >
-                Use Template
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+  {templates.map((template) => (
+   <Card
+  key={template.id}
+  className="flex flex-col justify-between h-full shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition-transform duration-300 hover:scale-105"
+>
+  <div className="flex-1 flex flex-col justify-between">
+    <CardHeader className="pb-2">
+      <CardTitle>
+        <div className="relative -mt-6  bg-[#272E3F] text-white text-center pt-0 pb-2 rounded-b-[110px] overflow-hidden w-[60%] mx-auto shadow-md">
+          <h2 className="text-[16px] font-semibold z-10 relative">{template.name}</h2>
+
+          {/* Bottom curve */}
+          <svg
+            className="absolute bottom-0 left-0 w-full"
+            viewBox="0 0 500 50"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,0 C125,50 375,50 500,0 L500,50 L0,50 Z"
+              fill="#272E3F"
+            />
+          </svg>
+        </div>
+      </CardTitle>
+      {template.description && (
+        <CardDescription>{template.description}</CardDescription>
+      )}
+    </CardHeader>
+
+    <CardContent className="flex-1">
+      <div className="bg-muted/50 p-3 rounded-md min-h-[140px] flex items-start">
+        <pre className="text-xs whitespace-pre-wrap font-mono">
+          {template.template.length > 100
+            ? `${template.template.substring(0, 100)}...`
+            : template.template}
+        </pre>
       </div>
+    </CardContent>
+  </div>
+
+  <CardFooter className="flex justify-between mt-auto">
+    <AlertDialog
+      open={isDeleteDialogOpen && selectedTemplate?.id === template.id}
+      onOpenChange={(open) => {
+        setIsDeleteDialogOpen(open);
+        if (!open) setSelectedTemplate(null);
+      }}
+    >
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSelectedTemplate(template)}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Template</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete the "{template.name}" template?
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDeleteTemplate}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => onSelectTemplate(template)}
+      className="bg-[#242C3F] text-white hover:bg-white"
+    >
+      Use Template
+    </Button>
+  </CardFooter>
+</Card>
+
+  ))}
+</div>
+
     </div>
   );
 };

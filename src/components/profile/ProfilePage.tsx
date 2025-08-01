@@ -47,8 +47,8 @@ const ProfilePage = () => {
 
   return (
     <DashboardLayout>
-      <div className="bg-background p-6 rounded-lg w-full max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
+      <div className="bg-background p-6 -ml-5 -mt-15 rounded-lg w-full max-w-5xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6 bg-gradient-to-r from-[#F0F4FF] to-[#E0ECFF] rounded-xl w-[100%]  p-6 shadow-sm ">Profile Settings</h1>
 
         <Tabs defaultValue="account" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -58,7 +58,7 @@ const ProfilePage = () => {
           </TabsList>
 
           <TabsContent value="account" className="space-y-4 mt-6">
-            <Card>
+           <Card className="shadow-xl transition-transform duration-300 hover:scale-105">
               <CardHeader>
                 <CardTitle>Personal Information</CardTitle>
                 <CardDescription>
@@ -79,7 +79,7 @@ const ProfilePage = () => {
                       size="sm"
                       onClick={() => setIsAvatarDialogOpen(true)}
                     >
-                      Change Avatar
+                      Change Profile Picture
                     </Button>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ const ProfilePage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="whitespace-nowrap"
+                        className="whitespace-nowrap bg-[#E6EFFF]"
                         onClick={() => {
                           alert("Verification code sent to your phone number");
                         }}
@@ -133,7 +133,7 @@ const ProfilePage = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-xl transition-transform duration-300 hover:scale-105">
               <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
@@ -162,8 +162,8 @@ const ProfilePage = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="subscription" className="space-y-4 mt-6">
-            <Card>
+          <TabsContent value="subscription" className="space-y-4 mt-6 ">
+            <Card className="shadow-xl transition-transform duration-300 hover:scale-105">
               <CardHeader>
                 <CardTitle>Current Plan</CardTitle>
                 <CardDescription>
@@ -199,7 +199,7 @@ const ProfilePage = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-xl transition-transform duration-300 hover:scale-105">
               <CardHeader>
                 <CardTitle>Payment Method</CardTitle>
                 <CardDescription>
@@ -243,7 +243,7 @@ const ProfilePage = () => {
           </TabsContent>
 
           <TabsContent value="preferences" className="space-y-4 mt-6">
-            <Card>
+            <Card className="shadow-xl transition-transform duration-300 hover:scale-105">
               <CardHeader>
                 <CardTitle>Application Preferences</CardTitle>
                 <CardDescription>
@@ -264,7 +264,7 @@ const ProfilePage = () => {
       <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Change Avatar</DialogTitle>
+            <DialogTitle>Change Profile Picture</DialogTitle>
             <DialogDescription>
               Select a new avatar or generate a random one.
             </DialogDescription>

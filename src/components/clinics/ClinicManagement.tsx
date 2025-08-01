@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Plus,
   Search,
@@ -280,7 +281,7 @@ const ClinicManagement = () => {
 
   return (
     <div className="bg-background p-6 rounded-lg w-full">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center bg-gradient-to-r from-[#F0F4FF] to-[#E0ECFF] rounded-xl w-[100%]  p-6 shadow-sm mb-8">
         <h1 className="text-2xl font-bold">Clinic Management</h1>
         <Dialog
           open={isAddClinicDialogOpen}
@@ -292,15 +293,26 @@ const ClinicManagement = () => {
               Add Clinic
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Add New Clinic</DialogTitle>
-              <DialogDescription>
-                Enter the details of the new clinic to add to your records.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="flex flex-col gap-2">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+  <DialogHeader>
+    <DialogTitle>
+      <div className="relative -mt-6 bg-[#272E3F] text-white text-center pt-0 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto">
+        <h2 className="text-lg font-semibold z-10 relative">Add New Clinic</h2>
+        <svg
+          className="absolute bottom-0 left-0 w-full"
+          viewBox="0 0 500 50"
+          preserveAspectRatio="none"
+        >
+          <path d="M0,0 C125,50 375,50 500,0 L500,50 L0,50 Z" fill="#272E3F" />
+        </svg>
+      </div>
+    </DialogTitle>
+    <DialogDescription>
+      Enter the details of the new clinic to add to your records.
+    </DialogDescription>
+  </DialogHeader>
+           <div className="overflow-y-auto pr-1 flex-1">
+    <div className="grid gap-4 py-4">
                 <Label htmlFor="name">Clinic Name</Label>
                 <Input
                   id="name"
@@ -446,50 +458,55 @@ const ClinicManagement = () => {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsAddClinicDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleAddClinic}>Add Clinic</Button>
-            </DialogFooter>
+           <DialogFooter className="pt-4 sticky bottom-0 bg-white border-t mt-2">
+    <Button
+      variant="outline"
+      onClick={() => setIsAddClinicDialogOpen(false)}
+    >
+      Cancel
+    </Button>
+    <Button onClick={handleAddClinic}>Add Clinic</Button>
+  </DialogFooter>
+
           </DialogContent>
         </Dialog>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-            size={18}
-          />
-          <Input
-            placeholder="Search clinics by name, city, or manager"
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <Select value={selectedType} onValueChange={setSelectedType}>
-          <SelectTrigger className="w-[180px]">
-            <div className="flex items-center gap-2">
-              <Filter size={16} />
-              <SelectValue placeholder="All Types" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="Small Animal">Small Animal</SelectItem>
-            <SelectItem value="Large Animal">Large Animal</SelectItem>
-            <SelectItem value="Mixed Practice">Mixed Practice</SelectItem>
-            <SelectItem value="Emergency">Emergency</SelectItem>
-            <SelectItem value="Specialty">Specialty</SelectItem>
-            <SelectItem value="Full Service">Full Service</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+  {/* Search Input */}
+  <div className="relative w-full md:max-w-md">
+    <Search
+      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+      size={18}
+    />
+    <Input
+      placeholder="Search clinics by name, city, or manager"
+      className="pl-10"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
+
+  {/* Filter Dropdown */}
+  <Select value={selectedType} onValueChange={setSelectedType}>
+    <SelectTrigger className="w-[180px]">
+      <div className="flex items-center gap-2">
+        <Filter size={16} />
+        <SelectValue placeholder="All Types" />
       </div>
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="all">All Types</SelectItem>
+      <SelectItem value="Small Animal">Small Animal</SelectItem>
+      <SelectItem value="Large Animal">Large Animal</SelectItem>
+      <SelectItem value="Mixed Practice">Mixed Practice</SelectItem>
+      <SelectItem value="Emergency">Emergency</SelectItem>
+      <SelectItem value="Specialty">Specialty</SelectItem>
+      <SelectItem value="Full Service">Full Service</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+
 
       {filteredClinics.length === 0 ? (
         <div className="text-center py-10">
@@ -500,84 +517,108 @@ const ClinicManagement = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredClinics.map((clinic) => (
-            <Card key={clinic.id} className="overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={clinic.logoUrl} alt={clinic.name} />
-                    <AvatarFallback>
-                      {clinic.name.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <MoreVertical size={16} />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => handleViewClinic(clinic)}
-                      >
-                        <Eye className="mr-2" size={16} />
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedClinic(clinic);
-                          handleEditClinic();
-                        }}
-                      >
-                        <Edit className="mr-2" size={16} />
-                        Edit Clinic
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => openDeleteConfirmation(clinic.id)}
-                      >
-                        <Trash2 className="mr-2" size={16} />
-                        Delete Clinic
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+         <Card
+  key={clinic.id}
+  className="overflow-hidden transition-transform duration-300 hover:scale-105 shadow-[0_10px_30px_rgba(0,0,0,0.2)] h-full flex flex-col justify-between"
+>
+  {/* Top Section */}
+  <div className="p-6 flex flex-col gap-4 flex-grow">
+    <div className="flex items-center justify-between">
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{clinic.name}</h3>
-                  <Badge className="mb-2">{clinic.type}</Badge>
+<motion.div
+  whileHover="hover"
+  initial="initial"
+  animate="initial"
+  variants={{
+    initial: { scale: 1, rotate: 0, y: 0, boxShadow: "none" },
+    hover: {
+      scale: 1.1,
+      rotate: [0, 2, -2, 2, -2, 0],
+      y: -4,
+      boxShadow: "0 0 12px rgba(0, 120, 255, 0.5)",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "loop",
+      },
+    },
+  }}
+  className="rounded-full"
+>
+  <Avatar className="h-16 w-16 ring-2 ring-transparent hover:ring-blue-400 transition duration-300">
+    <AvatarImage src={clinic.logoUrl} alt={clinic.name} />
+    <AvatarFallback>
+      {clinic.name.substring(0, 2).toUpperCase()}
+    </AvatarFallback>
+  </Avatar>
+</motion.div>
 
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-start">
-                      <MapPin size={14} className="mr-2 mt-0.5" />
-                      <span>
-                        {clinic.address}, {clinic.city}, {clinic.state}{" "}
-                        {clinic.zipCode}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <Phone size={14} className="mr-2" />
-                      <span>{clinic.phone}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Users size={14} className="mr-2" />
-                      <span>{clinic.petCount} pets</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-muted p-4 border-t">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => handleViewClinic(clinic)}
-                >
-                  View Details
-                </Button>
-              </div>
-            </Card>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <MoreVertical size={16} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => handleViewClinic(clinic)}>
+            <Eye className="mr-2" size={16} />
+            View Details
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              setSelectedClinic(clinic);
+              handleEditClinic();
+            }}
+          >
+            <Edit className="mr-2" size={16} />
+            Edit Clinic
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openDeleteConfirmation(clinic.id)}>
+            <Trash2 className="mr-2" size={16} />
+            Delete Clinic
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    {/* Clinic Info */}
+    <div className="flex-grow">
+      <h3 className="font-semibold text-lg mb-1">{clinic.name}</h3>
+      <Badge className="mb-2">{clinic.type}</Badge>
+
+      <div className="space-y-2 text-sm text-muted-foreground">
+        <div className="flex items-start">
+          <MapPin size={14} className="mr-2 mt-0.5" />
+          <span>
+            {clinic.address}, {clinic.city}, {clinic.state} {clinic.zipCode}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <Phone size={14} className="mr-2" />
+          <span>{clinic.phone}</span>
+        </div>
+        <div className="flex items-center">
+          <Users size={14} className="mr-2" />
+          <span>{clinic.petCount} pets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Sticky Bottom Button */}
+  <div className="bg-muted p-4 border-t">
+    <Button
+      variant="ghost"
+      className="w-full justify-start"
+      onClick={() => handleViewClinic(clinic)}
+    >
+      View Details
+    </Button>
+  </div>
+</Card>
+
+
           ))}
         </div>
       )}
@@ -592,6 +633,27 @@ const ClinicManagement = () => {
             <>
               <DialogHeader>
                 <div className="flex items-center gap-4">
+                  <motion.div
+  whileHover="hover"
+  initial="initial"
+  animate="initial"
+  variants={{
+    initial: { scale: 1, rotate: 0, y: 0, boxShadow: "none" },
+    hover: {
+      scale: 1.1,
+      rotate: [0, 2, -2, 2, -2, 0],
+      y: -4,
+      boxShadow: "0 0 12px rgba(0, 120, 255, 0.5)",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "loop",
+      },
+    },
+  }}
+  className="rounded-full"
+>
                   <Avatar className="h-16 w-16">
                     <AvatarImage
                       src={selectedClinic.logoUrl}
@@ -600,7 +662,7 @@ const ClinicManagement = () => {
                     <AvatarFallback>
                       {selectedClinic.name.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
-                  </Avatar>
+                  </Avatar></motion.div>
                   <div>
                     <DialogTitle className="text-xl">
                       {selectedClinic.name}
@@ -666,38 +728,39 @@ const ClinicManagement = () => {
 
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium">Statistics</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          Registered Pets
-                        </p>
-                        <p className="text-2xl font-bold">
-                          {selectedClinic.petCount}
-                        </p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          Transcriptions
-                        </p>
-                        <p className="text-2xl font-bold">24</p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          Last Visit
-                        </p>
-                        <p className="text-lg font-medium">2 days ago</p>
-                      </CardContent>
-                    </Card>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <Card className="transition-transform duration-300 hover:scale-105 text-center p-4 rounded shadow-md bg-[linear-gradient(270deg,#EAF1FF,#d4e4ff,#EAF1FF)] bg-[length:200%_200%] animate-[gradientMove_6s_linear_infinite]">
+
+
+    <CardContent>
+      <p className="text-sm text-muted-foreground">Registered Pets</p>
+      <p className="text-2xl font-bold">{selectedClinic.petCount}</p>
+    </CardContent>
+  </Card>
+
+  <Card className="transition-transform duration-300 hover:scale-105 text-center p-4 rounded shadow-md bg-[linear-gradient(270deg,#EAF1FF,#d4e4ff,#EAF1FF)] bg-[length:200%_200%] animate-[gradientMove_6s_linear_infinite]">
+
+
+    <CardContent>
+      <p className="text-sm text-muted-foreground">Transcriptions</p>
+      <p className="text-2xl font-bold">24</p>
+    </CardContent>
+  </Card>
+
+  <Card className="transition-transform duration-300 hover:scale-105 text-center p-4 rounded shadow-md bg-[linear-gradient(270deg,#EAF1FF,#d4e4ff,#EAF1FF)] bg-[length:200%_200%] animate-[gradientMove_6s_linear_infinite]">
+
+    <CardContent>
+      <p className="text-sm text-muted-foreground">Last Visit</p>
+      <p className="text-lg font-medium">2 days ago</p>
+    </CardContent>
+  </Card>
+</div>
+
+
                 </div>
               </div>
 
-              <DialogFooter className="flex justify-between sm:justify-between">
+              <DialogFooter className="flex justify-between sm:justify-between <DialogContent max-h-[80vh] overflow-auto">
                 <Button
                   variant="outline"
                   onClick={() => openDeleteConfirmation(selectedClinic.id)}
@@ -725,19 +788,34 @@ const ClinicManagement = () => {
       </Dialog>
 
       {/* Edit Clinic Dialog */}
-      <Dialog
-        open={isEditClinicDialogOpen}
-        onOpenChange={setIsEditClinicDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Edit Clinic</DialogTitle>
-            <DialogDescription>
-              Update the details of {selectedClinic?.name}.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
+      <Dialog open={isEditClinicDialogOpen} onOpenChange={setIsEditClinicDialogOpen}>
+  <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+    <DialogHeader>
+     <DialogTitle><div className="relative -mt-6 bg-[#272E3F] text-white text-center pt-0 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto ">
+    
+    
+        <h2 className="text-lg font-semibold z-10 relative">Edit Clinic</h2>
+    
+        {/* Bottom curve with SVG */}
+        <svg
+          className="absolute bottom-0 left-0 w-full"
+          viewBox="0 0 500 50"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,0 C125,50 375,50 500,0 L500,50 L0,50 Z"
+            fill="#272E3F"
+          />
+        </svg>
+      </div></DialogTitle>
+      <DialogDescription>
+        Update the details of {selectedClinic?.name}.
+      </DialogDescription>
+    </DialogHeader>
+
+    {/* Scrollable content */}
+    <div className="overflow-y-auto pr-1 flex-1">
+      <div className="grid gap-4 py-4">
               <Label htmlFor="edit-name">Clinic Name</Label>
               <Input
                 id="edit-name"
@@ -874,17 +952,17 @@ const ClinicManagement = () => {
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsEditClinicDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={saveEditedClinic}>Save Changes</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+           <DialogFooter className="pt-4  bottom-0 bg-white border-t ">
+      <Button 
+        variant="outline"
+        onClick={() => setIsEditClinicDialogOpen(false)}
+      >
+        Cancel
+      </Button>
+      <Button onClick={saveEditedClinic}>Save Changes</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   Search,
   Filter,
@@ -77,6 +78,7 @@ interface Transcription {
   audioUrl?: string;
   summary?: string;
   isCallRecording?: boolean;
+  transcription?: string;
 }
 
 const TranscriptionHistory: React.FC = () => {
@@ -345,125 +347,143 @@ const TranscriptionHistory: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm w-full border-purrscribe-blue/10">
+    <div className="bg-background min-h-screen p-6 bg-gradient-to-b from-white to-primary-50">
       <div className="flex flex-col space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Transcription History</h1>
-          <div className="flex space-x-2">
-            <Tabs defaultValue="all" onValueChange={setFormatFilter}>
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="SOAP">SOAP</TabsTrigger>
-                <TabsTrigger value="Medical Notes">Medical Notes</TabsTrigger>
-                <TabsTrigger value="Raw Text">Raw Text</TabsTrigger>
-                <TabsTrigger value="Call Recording">
-                  Call Recordings
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
+       <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+<div className="bg-gradient-to-r from-[#F0F4FF] to-[#E0ECFF] rounded-xl w-[100%]  p-6 shadow-sm mb-8">
+    <motion.h1
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="text-2xl font-bold"
+    >
+      Transcription History
+    </motion.h1>
+</div>
+   <div className="flex justify-between items-center w-full flex-wrap gap-4">
+    {/* Tabs */}
+    <Tabs defaultValue="all" onValueChange={setFormatFilter} className="">
+      <TabsList>
+        <TabsTrigger value="all">All</TabsTrigger>
+        <TabsTrigger value="SOAP">SOAP</TabsTrigger>
+        <TabsTrigger value="Medical Notes">Medical Notes</TabsTrigger>
+        <TabsTrigger value="Raw Text">Raw Text</TabsTrigger>
+        <TabsTrigger value="Call Recording">Call Recordings</TabsTrigger>
+      </TabsList>
+    </Tabs>
 
-        <div className="flex justify-between items-center">
-          <div className="relative w-full max-w-md">
-            <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-            <Input
-              placeholder="Search transcriptions..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            className="flex items-center gap-2"
-          >
-            {sortOrder === "asc" ? (
-              <SortAsc size={16} />
-            ) : (
-              <SortDesc size={16} />
-            )}
-            {sortOrder === "asc" ? "Oldest First" : "Newest First"}
-          </Button>
-        </div>
-
+    {/* Search Input */}
+  <div className="relative w-64 sm:w-72 md:w-50 ml-auto">
+  <Search
+    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+    size={18}
+  />
+  <Input
+    placeholder="Search transcriptions..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    className="pl-10"
+  />
+</div>
+</div>
+</div>
+       <div className="flex justify-end mt-[-2rem]"> 
+  <Button
+    variant="outline"
+    onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+    className="flex items-center gap-2"
+  >
+    {sortOrder === "asc" ? <SortAsc size={16} /> : <SortDesc size={16} />}
+    {sortOrder === "asc" ? "Oldest First" : "Newest First"}
+  </Button>
+</div>
         <div className="grid gap-4">
           {filteredTranscriptions.length > 0 ? (
             filteredTranscriptions.map((transcription) => (
-              <Card
-                key={transcription.id}
-                className="cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleTranscriptionClick(transcription)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium text-lg">
-                        {transcription.title}
-                        {transcription.isCallRecording && (
-                          <Phone
-                            size={16}
-                            className="inline-block ml-2 text-purrscribe-blue"
-                          />
-                        )}
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                        <Calendar size={14} />
-                        <span>{format(transcription.date, "MMM d, yyyy")}</span>
-                        <Badge
-                          className={getFormatBadgeColor(transcription.format)}
-                        >
-                          {transcription.format === "Call Recording" ? (
-                            <div className="flex items-center gap-1">
-                              <Phone size={12} />
-                              <span>Call Recording</span>
-                            </div>
-                          ) : (
-                            transcription.format
-                          )}
-                        </Badge>
-                        {transcription.duration && (
-                          <span className="text-xs text-gray-500">
-                            {formatTime(transcription.duration)}
-                          </span>
-                        )}
-                      </div>
-                      {(transcription.petName ||
-                        transcription.clinicName ||
-                        transcription.ownerName) && (
-                        <div className="flex gap-2 mt-1 text-sm text-gray-500">
-                          {transcription.petName && (
-                            <span>Pet: {transcription.petName}</span>
-                          )}
-                          {transcription.petName &&
-                            (transcription.clinicName ||
-                              transcription.ownerName) && <span>•</span>}
-                          {transcription.clinicName && (
-                            <span>Clinic: {transcription.clinicName}</span>
-                          )}
-                          {transcription.clinicName &&
-                            transcription.ownerName && <span>•</span>}
-                          {transcription.ownerName && (
-                            <span>Owner: {transcription.ownerName}</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    {transcription.isCallRecording ? (
-                      <Mic size={20} className="text-purrscribe-blue" />
-                    ) : (
-                      <FileText size={20} className="text-gray-400" />
-                    )}
-                  </div>
-                  <p className="mt-3 text-gray-600 line-clamp-2">
-                    {transcription.content}
-                  </p>
-                </CardContent>
-              </Card>
+              <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.4, ease: "easeOut" }}
+>
+            <Card
+  key={transcription.id}
+  onClick={() => handleTranscriptionClick(transcription)}
+  className="cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] shadow-xl border border-gray-200 rounded-xl bg-white"
+>
+  <CardContent className="p-5 shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="flex justify-between items-start">
+      <div className="w-full">
+        <h3 className="font-semibold text-lg text-gray-800">
+          {transcription.title}
+          {transcription.isCallRecording && (
+            <Phone
+              size={16}
+              className="inline-block ml-2 text-purrscribe-blue"
+            />
+          )}
+        </h3>
+
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
+          <div className="flex items-center gap-1">
+            <Calendar size={14} />
+            <span>{format(transcription.date, "MMM d, yyyy")}</span>
+          </div>
+
+          <Badge className={getFormatBadgeColor(transcription.format)}>
+            {transcription.format === "Call Recording" ? (
+              <div className="flex items-center gap-1">
+                <Phone size={12} />
+                <span>Call Recording</span>
+              </div>
+            ) : (
+              transcription.format
+            )}
+          </Badge>
+
+          {transcription.duration && (
+            <span className="text-xs text-gray-400">
+              {formatTime(transcription.duration)}
+            </span>
+          )}
+        </div>
+
+        {(transcription.petName ||
+          transcription.clinicName ||
+          transcription.ownerName) && (
+          <div className="flex flex-wrap gap-2 mt-2 text-sm text-gray-500">
+            {transcription.petName && <span>Pet: {transcription.petName}</span>}
+            {transcription.petName &&
+              (transcription.clinicName || transcription.ownerName) && (
+                <span>•</span>
+              )}
+            {transcription.clinicName && (
+              <span>Clinic: {transcription.clinicName}</span>
+            )}
+            {transcription.clinicName && transcription.ownerName && (
+              <span>•</span>
+            )}
+            {transcription.ownerName && (
+              <span>Owner: {transcription.ownerName}</span>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="ml-4 mt-1">
+        {transcription.isCallRecording ? (
+          <Mic size={20} className="text-purrscribe-blue" />
+        ) : (
+          <FileText size={20} className="text-gray-400" />
+        )}
+      </div>
+    </div>
+
+    <p className="mt-4 text-gray-600 text-sm line-clamp-2">
+      {transcription.content}
+    </p>
+  </CardContent>
+</Card>
+</motion.div>
             ))
           ) : (
             <div className="text-center py-8 text-gray-500">
@@ -477,7 +497,7 @@ const TranscriptionHistory: React.FC = () => {
 
       {/* Transcription Detail Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-3xl bg-[#F1F5F9]  transition-opacity">
           <DialogHeader>
             <DialogTitle>{selectedTranscription?.title}</DialogTitle>
           </DialogHeader>
@@ -800,3 +820,4 @@ const TranscriptionHistory: React.FC = () => {
 };
 
 export default TranscriptionHistory;
+

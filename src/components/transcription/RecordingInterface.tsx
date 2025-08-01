@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+
 import {
   Mic,
   Pause,
@@ -79,10 +80,13 @@ interface RecordingInterfaceProps {
     format: string;
     petId?: string;
     clinicId?: string;
+    visitType?: string;
+    templateId?: string;
   }) => void;
 }
 
 const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
+  
   onSave = () => {},
 }) => {
   // State for recording
@@ -96,6 +100,26 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+const [displayText, setDisplayText] = useState("");
+  const transcriptionTexts = "Yahan tumhara text aayega, letter by letter.";
+   useEffect(() => {
+    let isCancelled = false;
+
+    const animateText = async () => {
+      setDisplayText("");
+      for (let i = 0; i < transcriptionText.length; i++) {
+        if (isCancelled) return;
+        setDisplayText((prev) => prev + transcriptionText.charAt(i));
+        await new Promise((res) => setTimeout(res, 30)); // Smooth delay
+      }
+    };
+
+    animateText();
+
+  return () => {
+      isCancelled = true; // Clean up on unmount or new input
+    };
+  }, [transcriptionText]);
 
   // New state for pet and clinic selection
   const [selectedPet, setSelectedPet] = useState<string | undefined>();
@@ -493,234 +517,229 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
       name: "",
     });
   };
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+//animation
 
   return (
-    <div className="bg-background p-6 rounded-lg w-full max-w-5xl mx-auto">
+    <div className="bg-gradient-to-br from-[#f0f4ff] via-[#e8faff] to-[#fef6e4] p-6 rounded-xl shadow-md mt-10 mr-5">
       <div className="space-y-8">
         {/* Pet and Clinic Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Visit Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Pet Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="pet-select">Pet (Optional)</Label>
-                <div className="flex gap-2">
-                  <Select
-                    value={selectedPet}
-                    onValueChange={setSelectedPet}
-                    disabled={isRecording}
-                  >
-                    <SelectTrigger id="pet-select" className="w-full">
-                      <SelectValue placeholder="Select pet" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {mockPets.map((pet) => (
-                        <SelectItem key={pet.id} value={pet.id}>
-                          {pet.name} ({pet.species})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Dialog
-                    open={isAddPetDialogOpen}
-                    onOpenChange={setIsAddPetDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={isRecording}
-                      >
-                        <Plus size={16} />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add New Pet</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <Label htmlFor="pet-name">Pet Name</Label>
-                            <Input
-                              id="pet-name"
-                              value={newPet.name}
-                              onChange={(e) =>
-                                setNewPet({ ...newPet, name: e.target.value })
-                              }
-                              placeholder="Max"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <Label htmlFor="species">Species</Label>
-                            <Select
-                              value={newPet.species}
-                              onValueChange={(value) =>
-                                setNewPet({ ...newPet, species: value })
-                              }
-                            >
-                              <SelectTrigger id="species">
-                                <SelectValue placeholder="Select species" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Dog">Dog</SelectItem>
-                                <SelectItem value="Cat">Cat</SelectItem>
-                                <SelectItem value="Bird">Bird</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <Label htmlFor="breed">Breed</Label>
-                            <Input
-                              id="breed"
-                              value={newPet.breed}
-                              onChange={(e) =>
-                                setNewPet({ ...newPet, breed: e.target.value })
-                              }
-                              placeholder="Golden Retriever"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <Label htmlFor="owner">Owner</Label>
-                            <Input
-                              id="owner"
-                              value={newPet.owner}
-                              onChange={(e) =>
-                                setNewPet({ ...newPet, owner: e.target.value })
-                              }
-                              placeholder="John Smith"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button
-                          variant="outline"
-                          onClick={() => setIsAddPetDialogOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button onClick={handleAddPet}>Add Pet</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                {selectedPet && (
-                  <div className="text-sm text-muted-foreground">
-                    {mockPets.find((p) => p.id === selectedPet)?.breed}, Owner:{" "}
-                    {mockPets.find((p) => p.id === selectedPet)?.owner}
-                  </div>
-                )}
-              </div>
-
-              {/* Clinic Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="clinic-select">Clinic (Optional)</Label>
-                <div className="flex gap-2">
-                  <Select
-                    value={selectedClinic}
-                    onValueChange={setSelectedClinic}
-                    disabled={isRecording}
-                  >
-                    <SelectTrigger id="clinic-select" className="w-full">
-                      <SelectValue placeholder="Select clinic" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {mockClinics.map((clinic) => (
-                        <SelectItem key={clinic.id} value={clinic.id}>
-                          {clinic.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Dialog
-                    open={isAddClinicDialogOpen}
-                    onOpenChange={setIsAddClinicDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={isRecording}
-                      >
-                        <Plus size={16} />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add New Clinic</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="flex flex-col gap-2">
-                          <Label htmlFor="clinic-name">Clinic Name</Label>
-                          <Input
-                            id="clinic-name"
-                            value={newClinic.name}
-                            onChange={(e) =>
-                              setNewClinic({
-                                ...newClinic,
-                                name: e.target.value,
-                              })
-                            }
-                            placeholder="Main Street Veterinary Clinic"
-                          />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button
-                          variant="outline"
-                          onClick={() => setIsAddClinicDialogOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button onClick={handleAddClinic}>Add Clinic</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                {selectedClinic && (
-                  <div className="text-sm text-muted-foreground">
-                    {mockClinics.find((c) => c.id === selectedClinic)?.address},{" "}
-                    {mockClinics.find((c) => c.id === selectedClinic)?.city}
-                  </div>
-                )}
-              </div>
-
-              {/* Visit Type Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="visit-type">Visit Type (Optional)</Label>
+        <motion.div variants={fadeInUp} initial="hidden" animate="show">
+      <Card className="bg-white/80 backdrop-blur-lg shadow-xl border border-gray-200 rounded-2xl transition-all">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-gray-800">
+            Visit Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Pet Selection */}
+            <div className="space-y-2">
+              <Label htmlFor="pet-select">Pet (Optional)</Label>
+              <div className="flex gap-2 items-start">
                 <Select
-                  value={visitType}
-                  onValueChange={setVisitType}
+                  value={selectedPet}
+                  onValueChange={setSelectedPet}
                   disabled={isRecording}
                 >
-                  <SelectTrigger id="visit-type">
-                    <SelectValue placeholder="Select visit type" />
+                  <SelectTrigger id="pet-select" className="w-full">
+                    <SelectValue placeholder="Select pet" />
                   </SelectTrigger>
                   <SelectContent>
-                    {visitTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
+                    {mockPets.map((pet) => (
+                      <SelectItem key={pet.id} value={pet.id}>
+                        {pet.name} ({pet.species})
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <Dialog open={isAddPetDialogOpen} onOpenChange={setIsAddPetDialogOpen}>
+                  <DialogTrigger asChild className="bg-[#E6EFFF] text-gray-900 hover:bg-[#c9defc] hover:text-[#1e293b] "
+>
+                    <Button variant="outline" size="icon" disabled={isRecording}>
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </DialogTrigger>
+                 <DialogContent
+  className="transition-all duration-300 ease-out scale-95 opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100"
+>
+                    <DialogHeader>
+                      <DialogTitle>Add New Pet</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-2">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="pet-name">Pet Name</Label>
+                          <Input
+                            id="pet-name"
+                            value={newPet.name}
+                            onChange={(e) =>
+                              setNewPet({ ...newPet, name: e.target.value })
+                            }
+                            placeholder="Max"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="species">Species</Label>
+                          <Select
+                            value={newPet.species}
+                            onValueChange={(value) =>
+                              setNewPet({ ...newPet, species: value })
+                            }
+                          >
+                            <SelectTrigger id="species">
+                              <SelectValue placeholder="Select species" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Dog">Dog</SelectItem>
+                              <SelectItem value="Cat">Cat</SelectItem>
+                              <SelectItem value="Bird">Bird</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="breed">Breed</Label>
+                          <Input
+                            id="breed"
+                            value={newPet.breed}
+                            onChange={(e) =>
+                              setNewPet({ ...newPet, breed: e.target.value })
+                            }
+                            placeholder="Golden Retriever"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="owner">Owner</Label>
+                          <Input
+                            id="owner"
+                            value={newPet.owner}
+                            onChange={(e) =>
+                              setNewPet({ ...newPet, owner: e.target.value })
+                            }
+                            placeholder="John Smith"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsAddPetDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddPet}>Add Pet</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
+              {selectedPet && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {mockPets.find((p) => p.id === selectedPet)?.breed}, Owner:{" "}
+                  {mockPets.find((p) => p.id === selectedPet)?.owner}
+                </p>
+              )}
             </div>
-          </CardContent>
-        </Card>
 
-        <Card>
+            {/* Clinic Selection */}
+            <div className="space-y-2">
+              <Label htmlFor="clinic-select">Clinic (Optional)</Label>
+              <div className="flex gap-2 items-start">
+                <Select
+                  value={selectedClinic}
+                  onValueChange={setSelectedClinic}
+                  disabled={isRecording}
+                >
+                  <SelectTrigger id="clinic-select" className="w-full">
+                    <SelectValue placeholder="Select clinic" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mockClinics.map((clinic) => (
+                      <SelectItem key={clinic.id} value={clinic.id}>
+                        {clinic.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Dialog open={isAddClinicDialogOpen} onOpenChange={setIsAddClinicDialogOpen}>
+                  <DialogTrigger asChild className="bg-[#E6EFFF] text-gray-900 hover:bg-[#c9defc] hover:text-[#1e293b] ">
+                    <Button variant="outline" size="icon" disabled={isRecording}>
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Clinic</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-2 space-y-4">
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="clinic-name">Clinic Name</Label>
+                        <Input
+                          id="clinic-name"
+                          value={newClinic.name}
+                          onChange={(e) =>
+                            setNewClinic({ ...newClinic, name: e.target.value })
+                          }
+                          placeholder="Main Street Veterinary Clinic"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsAddClinicDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddClinic}>Add Clinic</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              {selectedClinic && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {mockClinics.find((c) => c.id === selectedClinic)?.address},{" "}
+                  {mockClinics.find((c) => c.id === selectedClinic)?.city}
+                </p>
+              )}
+            </div>
+
+            {/* Visit Type */}
+            <div className="space-y-2">
+              <Label htmlFor="visit-type">Visit Type (Optional)</Label>
+              <Select
+                value={visitType}
+                onValueChange={setVisitType}
+                disabled={isRecording}
+              >
+                <SelectTrigger id="visit-type">
+                  <SelectValue placeholder="Select visit type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {visitTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+ <motion.div variants={fadeInUp} initial="hidden" animate="show">
+        <Card className="bg-white/80 backdrop-blur-lg shadow-xl border border-gray-200 rounded-2xl transition-all"  >
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               <span>Audio Recording</span>
-              <div className="text-sm font-normal bg-primary/10 px-3 py-1 rounded-full">
+              <div className="text-sm font-normal bg-[#E6EFFF] px-3 py-1 rounded-full">
                 {formatTime(recordingTime)}
               </div>
             </CardTitle>
@@ -845,14 +864,27 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
           </CardContent>
           <CardFooter className="flex justify-center space-x-4">
             {!isRecording ? (
-              <Button onClick={startRecording} disabled={isTranscribing}>
-                <Mic className="mr-2 h-4 w-4" />
-                Start Recording
-              </Button>
+             <Button onClick={startRecording} disabled={isTranscribing}>
+  <motion.div
+    animate={{
+      scale: [1, 1.2, 1],
+      opacity: [1, 0.7, 1],
+    }}
+    transition={{
+      repeat: Infinity,
+      duration: 1,
+      ease: "easeInOut",
+    }}
+    className="mr-2"
+  >
+    <Mic className="h-4 w-4" />
+  </motion.div>
+  Start Recording
+</Button>
             ) : isPaused ? (
               <>
                 <Button variant="outline" onClick={resumeRecording}>
-                  <Play className="mr-2 h-4 w-4" />
+                  <Play className="mr-2 h-4 w-4 bg-[#E6EFFF] text-black hover:bg-[#cbdcf8] " />
                   Resume
                 </Button>
                 <Button variant="destructive" onClick={stopRecording}>
@@ -866,18 +898,22 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
                   <Pause className="mr-2 h-4 w-4" />
                   Pause
                 </Button>
-                <Button variant="destructive" onClick={stopRecording}>
-                  <StopCircle className="mr-2 h-4 w-4" />
-                  Stop
-                </Button>
+               <Button
+  onClick={stopRecording}
+  variant="destructive"
+  
+>
+  <StopCircle className="mr-2 h-4 w-4 " />
+  Stop
+</Button>
               </>
             )}
           </CardFooter>
-        </Card>
+        </Card></motion.div>
 
         {isTranscriptionComplete && (
           <div className="mt-8 space-y-4">
-            <Card>
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <span>
@@ -892,7 +928,7 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 ">
                 {isEditMode && (
                   <div className="mb-4 space-y-4 p-4 border rounded-md bg-muted/20">
                     <h3 className="text-sm font-medium">
@@ -965,7 +1001,7 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
                   </div>
                 )}
                 <Textarea
-                  value={transcriptionText}
+                  value={displayText}
                   onChange={(e) => setTranscriptionText(e.target.value)}
                   className="min-h-[200px] font-mono"
                 />
@@ -1002,7 +1038,7 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
                 </AlertDialog>
 
                 <div className="space-x-2">
-                  <Button
+                  <Button className="transition-transform duration-300 transform hover:scale-105"
                     variant="outline"
                     onClick={() => setIsEditMode(!isEditMode)}
                   >
@@ -1014,7 +1050,7 @@ const RecordingInterface: React.FC<RecordingInterfaceProps> = ({
                     onOpenChange={setIsSaveDialogOpen}
                   >
                     <AlertDialogTrigger asChild>
-                      <Button>
+                     <Button className="transition-transform duration-300 transform hover:scale-105">
                         <Save className="mr-2 h-4 w-4" />
                         Save
                       </Button>

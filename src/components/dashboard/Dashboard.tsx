@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Home from "@/components/home";
+import Home from "../home/home";
 
 const Dashboard = () => {
   return (

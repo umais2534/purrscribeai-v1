@@ -130,7 +130,7 @@ const CallOwner = ({
   };
 
   return (
-    <Card className="overflow-hidden border-purrscribe-blue/20">
+    <Card className="overflow-hidden border-purrscribe-blue/20 ">
       <CardContent className="p-4">
         <div className="flex flex-col space-y-4">
           <div className="flex justify-between items-center">
