@@ -82,6 +82,13 @@ interface Transcription {
 }
 
 const TranscriptionHistory: React.FC = () => {
+   
+  const [showInput, setShowInput] = useState(false); 
+   const [selectedTab, setSelectedTab] = useState("all");
+
+  const handleTabChange = (value: string) => {
+    setSelectedTab(value);
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [formatFilter, setFormatFilter] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -360,32 +367,72 @@ const TranscriptionHistory: React.FC = () => {
       Transcription History
     </motion.h1>
 </div>
-   <div className="flex justify-between items-center w-full flex-wrap gap-4">
-    {/* Tabs */}
-    <Tabs defaultValue="all" onValueChange={setFormatFilter} className="">
-      <TabsList>
+   <div className="flex justify-between items-center w-full flex-wrap gap-4 relative">
+  {/* Tabs */}
+  <Tabs defaultValue="all" onValueChange={setFormatFilter} className="">
+    {/* Tabs for screen ≥ 640px */}
+    <div className="hidden sm:flex">
+      <TabsList className="flex flex-wrap gap-2">
         <TabsTrigger value="all">All</TabsTrigger>
-        <TabsTrigger value="SOAP">SOAP</TabsTrigger>
+        <TabsTrigger value="Soap">SOAP</TabsTrigger>
         <TabsTrigger value="Medical Notes">Medical Notes</TabsTrigger>
         <TabsTrigger value="Raw Text">Raw Text</TabsTrigger>
-        <TabsTrigger value="Call Recording">Call Recordings</TabsTrigger>
+        <TabsTrigger value="Call Recordings">Call Recordings</TabsTrigger>
+        <TabsTrigger value="Others">Others</TabsTrigger>
       </TabsList>
-    </Tabs>
+    </div>
 
-    {/* Search Input */}
-  <div className="relative w-64 sm:w-72 md:w-50 ml-auto">
-  <Search
-    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-    size={18}
-  />
-  <Input
-    placeholder="Search transcriptions..."
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="pl-10"
-  />
+    {/* Dropdown Tabs for screen < 640px */}
+    <div className="sm:hidden relative z-10">
+      <TabsList>
+        <details className="relative">
+          <summary className="cursor-pointer border px-4 py-2 rounded bg-white shadow flex items-center justify-between w-[200px]">
+            <span>Filter Options</span>
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </summary>
+          <div className="absolute mt-1 left-0 border rounded bg-white shadow w-[200px] flex flex-col">
+            <TabsTrigger value="all" className="text-left px-4 py-2 hover:bg-gray-100">All</TabsTrigger>
+            <TabsTrigger value="Soap" className="text-left px-4 py-2 hover:bg-gray-100">SOAP</TabsTrigger>
+            <TabsTrigger value="Medical Notes" className="text-left px-4 py-2 hover:bg-gray-100">Medical Notes</TabsTrigger>
+            <TabsTrigger value="Raw Text" className="text-left px-4 py-2 hover:bg-gray-100">Raw Text</TabsTrigger>
+            <TabsTrigger value="Call Recordings" className="text-left px-4 py-2 hover:bg-gray-100">Call Recordings</TabsTrigger>
+            <TabsTrigger value="Others" className="text-left px-4 py-2 hover:bg-gray-100">Others</TabsTrigger>
+          </div>
+        </details>
+      </TabsList>
+    </div>
+  </Tabs>
+
+  {/* Search Input */}
+  <div className="relative z-20 sm:ml-auto">
+    {/* Search Icon (always visible on mobile) */}
+    <Search
+      onClick={() => setShowInput(!showInput)}
+      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 sm:hidden z-30"
+      size={18}
+    />
+
+    {/* Input Field */}
+    <Input
+      placeholder="Search transcriptions..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className={`transition-all duration-300 pl-10 ${
+        showInput ? "w-64" : "w-10"
+      } sm:w-72 md:w-50`}
+      style={{
+        paddingLeft: "2.5rem",
+      }}
+    />
+  </div>
 </div>
-</div>
+
 </div>
        <div className="flex justify-end mt-[-2rem]"> 
   <Button

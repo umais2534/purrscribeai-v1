@@ -25,11 +25,12 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [expanded, setExpanded] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const location = useLocation();
   const { logout } = useAuth();
-const [dropdownOpen, setDropdownOpen] = useState(false);
-const toggleDropdown = () => setDropdownOpen(prev => !prev);
+
+  const toggleDropdown = () => setDropdownOpen((prev) => !prev);
   const toggleSidebar = () => setExpanded(!expanded);
   const handleLogout = () => logout();
 
@@ -45,8 +46,8 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
   ];
 
   return (
-    <div className="flex h-screen bg-background ">
-      {/* Toggle Sidebar */}
+    <div className="flex h-screen bg-background">
+      {/* Sidebar Toggle */}
       <div
         className={cn(
           "absolute justify-end bg-gray-250 text-gray-500",
@@ -58,7 +59,7 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
         </Button>
       </div>
 
-      {/* Mobile sidebar toggle */}
+      {/* Mobile Sidebar Toggle */}
       <Button
         variant="ghost"
         size="icon"
@@ -71,7 +72,7 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-30 z-40 flex flex-col bg-[#E6EFFF] border-r shadow-sm transition-all duration-100 md:relative",
+          "fixed inset-y-0 left-0 z-40 flex flex-col bg-[#E6EFFF] border-r shadow-sm transition-all duration-100 md:relative",
           expanded ? "w-64" : "w-16",
           "md:block",
           !expanded && "md:w-16 md:items-center"
@@ -121,37 +122,29 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
         </div>
       </div>
 
-      {/* Main content with avatar dropdown inside */}
-      <div
-        className="flex-1 overflow-auto px-20 md:p-9 mx-px px-20 py-8 relative"
-        style={{ marginLeft: expanded ? "0rem" : "0rem" }}
-      >
-        {/* Avatar Dropdown */}
-       
-        {/* Page Content */}
-        {children}
-      </div>
-      {/* Avatar Dropdown - Absolutely positioned at top right */}
-<div className="absolute top-6 right-6 z-50">
+      {/* Main Content */}
+   {/* Main Content */}
+<div className="flex-1 overflow-auto relative flex flex-col">
+
+  {/* Header */}
+ {/* Header */}
+<header className="h-30 px-6 flex items-center justify-end border-b bg-[#E6EFFF] shadow-sm">
   <div className="relative">
     <div onClick={toggleDropdown} className="cursor-pointer">
-      <Avatar className="h-10 w-10">
+      <Avatar className="h-12 w-12 py-2">
         <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=vet" />
         <AvatarFallback>VT</AvatarFallback>
       </Avatar>
     </div>
 
-    {/* Dropdown Menu */}
     {dropdownOpen && (
       <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
-        <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-         <Link
+        <Link
           to="/profile"
-      
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
         >
           Settings
         </Link>
-        </button>
         <button
           onClick={handleLogout}
           className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -161,6 +154,13 @@ const toggleDropdown = () => setDropdownOpen(prev => !prev);
       </div>
     )}
   </div>
+</header>
+
+
+  {/* Page Content */}
+  <main className="flex-1 md:p-9 px-10 ml-10 sm:px-6 lg:px-20 py-6">
+    {children}
+  </main>
 </div>
 
     </div>
