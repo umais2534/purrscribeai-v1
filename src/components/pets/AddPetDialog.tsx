@@ -21,7 +21,7 @@ const AddPetDialog = ({ isOpen, onOpenChange, pet, onPetChange, onAddPet }: AddP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[400px] max-h-[90vh] md:max-w-[600px] overflow-y-auto">
         <DialogHeader>
           <div className="relative -mt-6 bg-[#272E3F] text-white text-center pt-0 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto">
             <h2 className="text-lg font-semibold z-10 relative">Add New Pet</h2>
@@ -131,7 +131,7 @@ const AddPetDialog = ({ isOpen, onOpenChange, pet, onPetChange, onAddPet }: AddP
           </div>
         </div>
 
-        <DialogFooter className="sticky bottom-0 bg-background pt-4 pb-2">
+        <DialogFooter className="fixed bottom-0 bg-background pt-4 pb-2">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}

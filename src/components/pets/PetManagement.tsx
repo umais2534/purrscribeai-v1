@@ -10,7 +10,6 @@ import DeletePetDialog from "./DeletePetDialog";
 import { Pet, PetFormData } from "./types/petTypes";
 
 const PetManagement = () => {
-  // Initial pets data
   const [pets, setPets] = useState<Pet[]>([
     {
       id: "1",
@@ -74,20 +73,16 @@ const PetManagement = () => {
     },
   ]);
 
-  // State for search and filter
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpecies, setSelectedSpecies] = useState<string>("all");
 
-  // State for dialogs
   const [isAddPetDialogOpen, setIsAddPetDialogOpen] = useState(false);
   const [isViewPetDialogOpen, setIsViewPetDialogOpen] = useState(false);
   const [isEditPetDialogOpen, setIsEditPetDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // State for selected pet
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
-  // State for forms
   const [newPet, setNewPet] = useState<PetFormData>({
     name: "",
     species: "",
@@ -108,7 +103,6 @@ const PetManagement = () => {
     notes: "",
   });
 
-  // Filter pets based on search and species
   const filteredPets = pets.filter((pet) => {
     const matchesSearch =
       pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -121,7 +115,6 @@ const PetManagement = () => {
     return matchesSearch && matchesSpecies;
   });
 
-  // Handle adding a new pet
   const handleAddPet = () => {
     if (newPet.name && newPet.species && newPet.breed && newPet.owner) {
       const petToAdd = {
@@ -144,13 +137,11 @@ const PetManagement = () => {
     }
   };
 
-  // Handle viewing a pet
   const handleViewPet = (pet: Pet) => {
     setSelectedPet(pet);
     setIsViewPetDialogOpen(true);
   };
 
-  // Handle deleting a pet
   const handleDeletePet = () => {
     if (selectedPet) {
       setPets(pets.filter((pet) => pet.id !== selectedPet.id));
@@ -159,7 +150,6 @@ const PetManagement = () => {
     }
   };
 
-  // Handle opening edit dialog
   const handleEditPet = () => {
     if (selectedPet) {
       setEditFormData({
@@ -175,10 +165,14 @@ const PetManagement = () => {
     }
   };
 
-  // Handle saving edited pet
   const saveEditedPet = () => {
-    if (selectedPet && editFormData.name && editFormData.species && 
-        editFormData.breed && editFormData.owner) {
+    if (
+      selectedPet &&
+      editFormData.name &&
+      editFormData.species &&
+      editFormData.breed &&
+      editFormData.owner
+    ) {
       const updatedPets = pets.map((pet) => {
         if (pet.id === selectedPet.id) {
           return {
@@ -209,19 +203,18 @@ const PetManagement = () => {
     }
   };
 
-  // Handle form changes
   const handleNewPetChange = (updatedFields: Partial<PetFormData>) => {
-    setNewPet(prev => ({ ...prev, ...updatedFields }));
+    setNewPet((prev) => ({ ...prev, ...updatedFields }));
   };
 
   const handleEditFormChange = (updatedFields: Partial<PetFormData>) => {
-    setEditFormData(prev => ({ ...prev, ...updatedFields }));
+    setEditFormData((prev) => ({ ...prev, ...updatedFields }));
   };
 
   return (
     <div className="bg-background p-6 rounded-lg w-full">
       <PetManagementHeader onAddPet={() => setIsAddPetDialogOpen(true)} />
-      
+
       <PetSearchFilter
         searchTerm={searchTerm}
         selectedSpecies={selectedSpecies}
@@ -237,9 +230,10 @@ const PetManagement = () => {
           handleEditPet();
         }}
         onDeletePet={(id) => {
-          setSelectedPet(pets.find(p => p.id === id) || null);
+          setSelectedPet(pets.find((p) => p.id === id) || null);
           setIsDeleteDialogOpen(true);
         }}
+        onCallOwner={handleViewPet} // ✅ Shows ViewPetDialog when "Call Owner" is clicked
       />
 
       <AddPetDialog
@@ -256,7 +250,7 @@ const PetManagement = () => {
         pet={selectedPet}
         onEdit={handleEditPet}
         onDelete={(id) => {
-          setSelectedPet(pets.find(p => p.id === id) || null);
+          setSelectedPet(pets.find((p) => p.id === id) || null);
           setIsDeleteDialogOpen(true);
         }}
       />

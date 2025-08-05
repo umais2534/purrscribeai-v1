@@ -41,7 +41,7 @@ const ViewPetDialog = ({ isOpen, onOpenChange, pet, onEdit, onDelete }: ViewPetD
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+    <DialogContent className="max-w-[400px] max-h-[90vh] sm:max-w-[600px] overflow-y-auto">
         <DialogHeader>
           <div className=" gap-2 relative bg-[#272E3F] text-white text-center -mt-300 -pt-10 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto -mt-6">
             <span className="text-xl font-semibold">{pet.name}</span>

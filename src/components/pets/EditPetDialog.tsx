@@ -21,7 +21,7 @@ const EditPetDialog = ({ isOpen, onOpenChange, pet, onPetChange, onSave }: EditP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+<DialogContent className="max-w-[400px] max-h-[90vh] sm:max-w-[600px] overflow-y-auto">
         <DialogHeader>
           <div className="relative -mt-6 bg-[#272E3F] text-white text-center pt-0 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto">
             <h2 className="text-lg font-semibold z-10 relative">Edit Pet</h2>

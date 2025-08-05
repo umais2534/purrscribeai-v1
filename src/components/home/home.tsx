@@ -65,7 +65,7 @@ const quickAccessCards = quickAccessCardData.map((item) => ({
         {/* Quick Access */}
       <section className="space-y-4">
   <h2 className="text-xl font-semibold">Quick Access</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {quickAccessCards.map((card, idx) => {
       const col = idx % 3; // 0 = first column, 1 = second, 2 = third
       const borderColorClass =

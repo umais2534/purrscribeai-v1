@@ -424,7 +424,7 @@ const TranscriptionHistory: React.FC = () => {
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
       className={`transition-all duration-300 pl-10 ${
-        showInput ? "w-64" : "w-10"
+        showInput ? "w-44" : "w-10"
       } sm:w-72 md:w-50`}
       style={{
         paddingLeft: "2.5rem",

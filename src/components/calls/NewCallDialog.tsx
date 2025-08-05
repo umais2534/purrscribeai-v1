@@ -49,7 +49,7 @@ const NewCallDialog = ({
 }: NewCallDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] overflow-hidden p-0 rounded-t-[40px]">
+      <DialogContent className="max-w-[400px] md:max-w-[600px]  p-0 rounded-t-[20px] max-h-[90vh] overflow-y-auto">
         <div className="relative bg-[#272E3F] text-white text-center pt-0 pb-0 rounded-b-[110px] overflow-hidden w-[40%] mx-auto">
           <h2 className="text-lg font-semibold z-10 relative">Select a Pet to Call</h2>
           <svg

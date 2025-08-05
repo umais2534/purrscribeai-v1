@@ -1,5 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Eye, Edit, Trash2, Phone } from "lucide-react";
 import { Pet } from "./types/petTypes";
@@ -10,9 +15,16 @@ interface PetsGridProps {
   onViewPet: (pet: Pet) => void;
   onEditPet: (pet: Pet) => void;
   onDeletePet: (id: string) => void;
+  onCallOwner: (pet: Pet) => void; // ✅ New prop
 }
 
-const PetsGrid = ({ pets, onViewPet, onEditPet, onDeletePet }: PetsGridProps) => {
+const PetsGrid = ({
+  pets,
+  onViewPet,
+  onEditPet,
+  onDeletePet,
+  onCallOwner,
+}: PetsGridProps) => {
   if (pets.length === 0) {
     return (
       <div className="text-center py-10">
@@ -23,30 +35,14 @@ const PetsGrid = ({ pets, onViewPet, onEditPet, onDeletePet }: PetsGridProps) =>
     );
   }
 
-    const [isViewPetDialogOpen, setIsViewPetDialogOpen] = React.useState(false);
-
-    const [selectedPet, setSelectedPet] = React.useState<Pet | null>(null);
-
-    function handleEditPet() {
-        if (selectedPet) {
-            onEditPet(selectedPet);
-        }
+  function openDeleteConfirmation(id: string): void {
+    if (window.confirm("Are you sure you want to delete this pet?")) {
+      onDeletePet(id);
     }
-
-    function handleViewPet(pet: Pet): void {
-        setSelectedPet(pet);
-        setIsViewPetDialogOpen(true);
-        onViewPet(pet);
-    }
-
-    function openDeleteConfirmation(id: string): void {
-        if (window.confirm("Are you sure you want to delete this pet?")) {
-            onDeletePet(id);
-        }
-    }
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {pets.map((pet) => (
         <Card
           key={pet.id}
@@ -56,7 +52,7 @@ const PetsGrid = ({ pets, onViewPet, onEditPet, onDeletePet }: PetsGridProps) =>
             <img
               src={pet.imageUrl}
               alt={pet.name}
-             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${pet.name}`;
@@ -74,45 +70,21 @@ const PetsGrid = ({ pets, onViewPet, onEditPet, onDeletePet }: PetsGridProps) =>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleViewPet(pet)}>
-                                  <Eye className="mr-2" size={16} />
-                                  View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setSelectedPet(pet);
-                                    handleEditPet();
-                                  }}
-                                >
-                                  <Edit className="mr-2" size={16} />
-                                  Edit Pet
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => openDeleteConfirmation(pet.id)}
-                                >
-                                  <Trash2 className="mr-2" size={16} />
-                                  Delete Pet
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setSelectedPet(pet);
-                                    setIsViewPetDialogOpen(true);
-                                  }}
-                                >
-                                  <Phone className="mr-2" size={16} />
-                                  Call Owner
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => onViewPet(pet)}>
+                    <Eye className="mr-2" size={16} />
+                    View Details
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onEditPet(pet)}>
                     <Edit className="mr-2" size={16} />
                     Edit Pet
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onDeletePet(pet.id)}>
+                  <DropdownMenuItem
+                    onClick={() => openDeleteConfirmation(pet.id)}
+                  >
                     <Trash2 className="mr-2" size={16} />
                     Delete Pet
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onViewPet(pet)}>
+                  <DropdownMenuItem onClick={() => onCallOwner(pet)}>
                     <Phone className="mr-2" size={16} />
                     Call Owner
                   </DropdownMenuItem>
