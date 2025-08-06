@@ -53,19 +53,28 @@ const FileManager = () => {
       <h1 className="text-3xl font-bold mb-6">File Management</h1>
 
       <Tabs defaultValue="upload" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-          <TabsTrigger value="upload">Upload Files</TabsTrigger>
-          <TabsTrigger value="manage">Manage Files</TabsTrigger>
-        </TabsList>
+  {/* Background container for the tabs */}
+ <div className="p-4 border rounded-lg mb-8 w-full max-w-md mx-auto">
+  <TabsList className="flex flex-col sm:grid sm:grid-cols-2 gap-2 w-full">
+    <TabsTrigger value="upload" className="w-full bg-gray-400 text-white">
+      Upload Files
+    </TabsTrigger>
+    <TabsTrigger value="manage" className="w-full bg-gray-400 text-white">
+      Manage Files
+    </TabsTrigger>
+  </TabsList>
+</div>
 
-        <TabsContent value="upload" className="p-4 border rounded-lg bg-card">
-          <FileUploader onUpload={handleFileUpload} />
-        </TabsContent>
 
-        <TabsContent value="manage" className="p-4 border rounded-lg bg-card">
-          <FileList files={files} onDelete={handleFileDelete} />
-        </TabsContent>
-      </Tabs>
+  <TabsContent value="upload" className="p-4 border rounded-lg">
+    <FileUploader onUpload={handleFileUpload} />
+  </TabsContent>
+
+  <TabsContent value="manage" className="p-4 border rounded-lg ">
+    <FileList files={files} onDelete={handleFileDelete} />
+  </TabsContent>
+</Tabs>
+
     </div>
   );
 };

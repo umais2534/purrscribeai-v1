@@ -169,22 +169,27 @@ React.useEffect(() => {
       </Avatar>
     </div>
 
-    {dropdownOpen && (
-     <div className="p-4 border-t mt-auto">
-  <Button
-    variant="ghost"
-    className={cn(
-      "flex items-center text-muted-foreground hover:text-foreground w-full px-2",
-      !expanded && "justify-center"
-    )}
-    onClick={handleLogout}
-  >
-    <LogOut size={20} className="mr-2" />
-    {expanded && <span>Logout</span>}
-  </Button>
-</div>
+  {dropdownOpen && (
+  <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+    <button
+      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+      onClick={() => {
+        setDropdownOpen(false);
+        // navigate to settings
+        window.location.href = "/settings"; // or use `useNavigate()`
+      }}
+    >
+      Settings
+    </button>
+    <button
+      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+      onClick={handleLogout}
+    >
+      Logout
+    </button>
+  </div>
+)}
 
-    )}
   </div>
 </header>
 

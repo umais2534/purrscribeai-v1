@@ -369,7 +369,7 @@ const TranscriptionHistory: React.FC = () => {
 </div>
    <div className="flex justify-between items-center w-full flex-wrap gap-4 relative">
   {/* Tabs */}
-  <Tabs defaultValue="all" onValueChange={setFormatFilter} className="">
+  <Tabs defaultValue="all" onValueChange={setFormatFilter}>
     {/* Tabs for screen ≥ 640px */}
     <div className="hidden sm:flex">
       <TabsList className="flex flex-wrap gap-2">
@@ -396,7 +396,13 @@ const TranscriptionHistory: React.FC = () => {
               />
             </svg>
           </summary>
-          <div className="absolute mt-1 left-0 border rounded bg-white shadow w-[200px] flex flex-col">
+
+          {/* Dropdown menu - positioned ABOVE on small screens */}
+          <div
+            className="absolute w-[200px] left-0 z-20 rounded border bg-white shadow flex flex-col 
+                       max-[450px]:bottom-full max-[450px]:mb-2 
+                       sm:top-full sm:mt-1"
+          >
             <TabsTrigger value="all" className="text-left px-4 py-2 hover:bg-gray-100">All</TabsTrigger>
             <TabsTrigger value="Soap" className="text-left px-4 py-2 hover:bg-gray-100">SOAP</TabsTrigger>
             <TabsTrigger value="Medical Notes" className="text-left px-4 py-2 hover:bg-gray-100">Medical Notes</TabsTrigger>
@@ -410,7 +416,7 @@ const TranscriptionHistory: React.FC = () => {
   </Tabs>
 
   {/* Search Input */}
-  <div className="relative z-20 sm:ml-auto">
+  <div className="relative z-20 sm:ml-auto w-full sm:w-auto">
     {/* Search Icon (always visible on mobile) */}
     <Search
       onClick={() => setShowInput(!showInput)}
@@ -424,14 +430,15 @@ const TranscriptionHistory: React.FC = () => {
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
       className={`transition-all duration-300 pl-10 ${
-        showInput ? "w-44" : "w-10"
-      } sm:w-72 md:w-50`}
+        showInput ? "w-full sm:w-72" : "w-10 sm:w-72"
+      }`}
       style={{
         paddingLeft: "2.5rem",
       }}
     />
   </div>
 </div>
+
 
 </div>
        <div className="flex justify-end mt-[-2rem]"> 

@@ -737,43 +737,33 @@ const fadeInUp = {
  <motion.div variants={fadeInUp} initial="hidden" animate="show">
         <Card className="bg-white/80 backdrop-blur-lg shadow-xl border border-gray-200 rounded-2xl transition-all"  >
           <CardHeader>
-            <CardTitle className="flex justify-between items-center">
+            {/* <CardTitle className="flex justify-between items-center">
               <span>Audio Recording</span>
               <div className="text-sm font-normal bg-[#E6EFFF] px-3 py-1 rounded-full">
                 {formatTime(recordingTime)}
               </div>
-            </CardTitle>
+            </CardTitle> */}
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm font-medium">Format:</span>
-                  <Select value={format} onValueChange={setFormat}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select format" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="soap">SOAP Notes</SelectItem>
-                      <SelectItem value="medical">Medical Notes</SelectItem>
-                      <SelectItem value="raw">Raw Text</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              
 
                 <Dialog
                   open={isTemplateDialogOpen}
                   onOpenChange={setIsTemplateDialogOpen}
                 >
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex items-center gap-2"
-                    >
-                      <FileText size={16} />
-                      {selectedTemplate ? "Change Template" : "Select Template"}
-                    </Button>
-                  </DialogTrigger>
+                 <div className="max-w-full flex flex-wrap sm:flex-nowrap">
+  <DialogTrigger asChild>
+    <Button
+      variant="outline"
+      className="flex items-center gap-2 max-w-full sm:max-w-none overflow-hidden"
+    >
+      <FileText size={16} />
+      {selectedTemplate ? "Change Template" : "Select Template"}
+    </Button>
+  </DialogTrigger>
+</div>
                   <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle>Select a Template</DialogTitle>
@@ -862,53 +852,50 @@ const fadeInUp = {
               )}
             </div>
           </CardContent>
-          <CardFooter className="flex justify-center space-x-4">
-            {!isRecording ? (
-             <Button onClick={startRecording} disabled={isTranscribing}>
-  <motion.div
-    animate={{
-      scale: [1, 1.2, 1],
-      opacity: [1, 0.7, 1],
-    }}
-    transition={{
-      repeat: Infinity,
-      duration: 1,
-      ease: "easeInOut",
-    }}
-    className="mr-2"
-  >
-    <Mic className="h-4 w-4" />
-  </motion.div>
-  Start Recording
-</Button>
-            ) : isPaused ? (
-              <>
-                <Button variant="outline" onClick={resumeRecording}>
-                  <Play className="mr-2 h-4 w-4 bg-[#E6EFFF] text-black hover:bg-[#cbdcf8] " />
-                  Resume
-                </Button>
-                <Button variant="destructive" onClick={stopRecording}>
-                  <StopCircle className="mr-2 h-4 w-4" />
-                  Stop
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" onClick={pauseRecording}>
-                  <Pause className="mr-2 h-4 w-4" />
-                  Pause
-                </Button>
-               <Button
-  onClick={stopRecording}
-  variant="destructive"
-  
->
-  <StopCircle className="mr-2 h-4 w-4 " />
-  Stop
-</Button>
-              </>
-            )}
-          </CardFooter>
+         <CardFooter className="flex justify-center">
+  {!isRecording ? (
+    <Button onClick={startRecording} disabled={isTranscribing}>
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [1, 0.7, 1],
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 1,
+          ease: "easeInOut",
+        }}
+        className="mr-2"
+      >
+        <Mic className="h-4 w-4" />
+      </motion.div>
+      Start Recording
+    </Button>
+  ) : isPaused ? (
+    <div className="flex sm:flex-row max-[400px]:flex-col gap-2">
+      <Button variant="outline" onClick={resumeRecording}>
+        <Play className="mr-2 h-4 w-4 bg-[#E6EFFF] text-black hover:bg-[#cbdcf8]" />
+        Resume
+      </Button>
+      <Button variant="destructive" onClick={stopRecording}>
+        <StopCircle className="mr-2 h-4 w-4" />
+        Stop
+      </Button>
+    </div>
+  ) : (
+    <div className="flex sm:flex-row max-[400px]:flex-col gap-2">
+      <Button variant="outline" onClick={pauseRecording}>
+        <Pause className="mr-2 h-4 w-4" />
+        Pause
+      </Button>
+      <Button onClick={stopRecording} variant="destructive">
+        <StopCircle className="mr-2 h-4 w-4" />
+        Stop
+      </Button>
+    </div>
+  )}
+</CardFooter>
+
         </Card></motion.div>
 
         {isTranscriptionComplete && (
@@ -1006,72 +993,66 @@ const fadeInUp = {
                   className="min-h-[200px] font-mono"
                 />
               </CardContent>
-              <CardFooter className="flex justify-between">
-                <AlertDialog
-                  open={isDiscardDialogOpen}
-                  onOpenChange={setIsDiscardDialogOpen}
-                >
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Discard
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Discard Transcription</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to discard this transcription?
-                        This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={discardTranscription}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      >
-                        Discard
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+             <CardFooter className="flex justify-between max-[550px]:flex-col max-[550px]:items-stretch max-[550px]:space-y-2">
+  <AlertDialog open={isDiscardDialogOpen} onOpenChange={setIsDiscardDialogOpen}>
+    <AlertDialogTrigger asChild>
+      <Button variant="destructive" className="max-[550px]:w-full">
+        <Trash2 className="mr-2 h-4 w-4" />
+        Discard
+      </Button>
+    </AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Discard Transcription</AlertDialogTitle>
+        <AlertDialogDescription>
+          Are you sure you want to discard this transcription? This action cannot be undone.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction
+          onClick={discardTranscription}
+          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        >
+          Discard
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 
-                <div className="space-x-2">
-                  <Button className="transition-transform duration-300 transform hover:scale-105"
-                    variant="outline"
-                    onClick={() => setIsEditMode(!isEditMode)}
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    {isEditMode ? "Done Editing" : "Edit"}
-                  </Button>
-                  <AlertDialog
-                    open={isSaveDialogOpen}
-                    onOpenChange={setIsSaveDialogOpen}
-                  >
-                    <AlertDialogTrigger asChild>
-                     <Button className="transition-transform duration-300 transform hover:scale-105">
-                        <Save className="mr-2 h-4 w-4" />
-                        Save
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Save Transcription</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to save this transcription?
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={saveTranscription}>
-                          Save
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </CardFooter>
+  <div className="flex space-x-2 max-[550px]:flex-col max-[550px]:space-x-0 max-[550px]:space-y-2 max-[550px]:w-full">
+    <Button
+      className="transition-transform duration-300 transform hover:scale-105 max-[550px]:w-full"
+      variant="outline"
+      onClick={() => setIsEditMode(!isEditMode)}
+    >
+      <Edit className="mr-2 h-4 w-4" />
+      {isEditMode ? "Done Editing" : "Edit"}
+    </Button>
+
+    <AlertDialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen}>
+      <AlertDialogTrigger asChild>
+        <Button className="transition-transform duration-300 transform hover:scale-105 max-[550px]:w-full">
+          <Save className="mr-2 h-4 w-4" />
+          Save
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Save Transcription</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to save this transcription?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={saveTranscription}>Save</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
+</CardFooter>
+
             </Card>
           </div>
         )}

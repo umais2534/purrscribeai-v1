@@ -39,7 +39,7 @@ const quickAccessCards = quickAccessCardData.map((item) => ({
               visible: { transition: { staggerChildren: 0.05 } },
             }}
           >
-            {`Welcome back, ${userName}`.split("").map((char, index) => (
+            {`Welcome , ${userName}`.split("").map((char, index) => (
               <motion.span
                 key={index}
                 variants={{
@@ -82,12 +82,17 @@ const quickAccessCards = quickAccessCardData.map((item) => ({
 
         {/* Recent Transcriptions */}
         <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Recent Transcriptions</h2>
-            <Button variant="outline" onClick={() => navigate("/history")}>
-              View All <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+         <div className="flex flex-col [@media(min-width:400px)]:flex-row [@media(min-width:400px)]:justify-between [@media(min-width:400px)]:items-center items-center gap-2">
+  <h2 className="text-xl font-semibold text-center [@media(min-width:400px)]:text-left">Recent Transcriptions</h2>
+  <Button
+    variant="outline"
+    onClick={() => navigate("/history")}
+    className="w-full max-w-[200px] [@media(min-width:400px)]:w-auto"
+  >
+    View All <ChevronRight className="ml-2 h-4 w-4" />
+  </Button>
+</div>
+
           <div className="space-y-4">
             {recentTranscriptions.map((t) => (
               <TranscriptionCard key={t.id} transcription={t} navigate={navigate} />
