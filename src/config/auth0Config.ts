@@ -1,6 +1,6 @@
 export const auth0Config = {
-  domain: "dev-jtiaaa6as2dvrknq.us.auth0.com", // e.g., dev-xyz123.us.auth0.com
-  clientId: "i4w42sHzZgHE3J1x3aXP46P9tn67aCAe",
-  redirectUri: "http://localhost:5173",
+  domain: "dev-425tsbqbsydrl817.us.auth0.com", // e.g., dev-xyz123.us.auth0.com
+  clientId: "khOeXW1zhuOR8qAz4xHbOIhtWVsMWy9y",
+  redirectUri: "https://purrscribeai.netlify.app/dashboard",
   audience: "", // optional
 };
